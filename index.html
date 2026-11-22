@@ -1,90 +1,181 @@
-<!DOCTYPE html>
-<html lang="en">
+﻿<!DOCTYPE html>
+<html lang="en" dir="ltr">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>L'Oréal | Smart Routine &amp; Product Advisor</title>
-    <link
-      href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;500;700&display=swap"
-      rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.2/css/all.min.css"
-    />
+    <meta name="description" content="Explore L'Oréal brand products, save your favorites, and build a personalized beauty routine with an AI advisor." />
+    <meta name="theme-color" content="#171717" />
+    <title>L'Oréal | Your Personal Routine</title>
     <link rel="stylesheet" href="style.css" />
+    <!-- Ordinary scripts run in order after the page has loaded. No packages needed. -->
+    <script src="sources.js" defer></script>
+    <script src="script.js" defer></script>
   </head>
-
   <body>
+    <a class="skip-link" href="#mainContent">Skip to routine builder</a>
     <div class="page-wrapper">
-      <!------- Header / Branding ------->
+      <!-- Brand header and a direction control for readers using RTL languages. -->
       <header class="site-header">
-        <img src="img/loreal-logo.png" alt="L'Oréal Logo" class="logo" />
-        <h1 class="site-title">Smart Routine &amp; Product Advisor</h1>
+        <a class="brand-link" href="./" aria-label="L'Oréal routine builder home">
+          <img src="img/loreal-logo.png" alt="L'Oréal" class="logo" width="500" height="91" />
+        </a>
+        <div class="header-tools">
+          <span class="header-label">THE PERSONAL ROUTINE EDIT</span>
+          <button id="directionToggle" class="text-button" type="button" aria-pressed="false">RTL layout</button>
+        </div>
       </header>
-
-      <!-- Category Filter -->
-      <div class="search-section">
-        <select id="categoryFilter">
-          <option value="" disabled selected>Choose a Category</option>
-          <option value="cleanser">Cleansers</option>
-          <option value="moisturizer">Moisturizers & Treatments</option>
-          <option value="haircare">Haircare</option>
-          <option value="makeup">Makeup</option>
-          <option value="hair color">Hair Color</option>
-          <option value="hair styling">Hair Styling</option>
-          <option value="men's grooming">Men's Grooming</option>
-          <option value="suncare">Suncare</option>
-          <option value="fragrance">Fragrance</option>
-        </select>
-      </div>
-
-      <!-- Products Grid -->
-      <div id="productsContainer" class="products-grid"></div>
-
-      <!-- Selected Products -->
-      <div class="selected-products">
-        <h2>Selected Products</h2>
-        <div id="selectedProductsList"></div>
-        <button id="generateRoutine" class="generate-btn">
-          <i class="fa-solid fa-wand-magic-sparkles"></i> Generate Routine
-        </button>
-      </div>
-
-      <!------- Chat Area ------->
-      <section class="chatbox">
-        <h2>Let's Build Your Routine</h2>
-        <div id="chatWindow" class="chat-window"></div>
-
-        <form id="chatForm" class="chat-form">
-          <label for="userInput" class="visually-hidden">Message</label>
-          <input
-            id="userInput"
-            name="userInput"
-            type="text"
-            placeholder="Ask me about products or routines…"
-            autocomplete="off"
-            required
-          />
-          <button type="submit" id="sendBtn">
-            <i class="fa-solid fa-paper-plane"></i>
-            <span class="visually-hidden">Send</span>
-          </button>
-        </form>
-      </section>
-
-      <!------- Footer Links ------->
+      <main id="mainContent">
+        <!-- A short introduction explains the experience without hiding the tools. -->
+        <section class="hero" aria-labelledby="pageTitle">
+          <div>
+            <p class="eyebrow">BEAUTY, BUILT AROUND YOU</p>
+            <h1 id="pageTitle">Your products.<br /><span>Your personal routine.</span></h1>
+          </div>
+          <p class="hero-description">Find your favorites. Tell us what you need. Let your AI beauty advisor bring it all together.</p>
+        </section>
+        <p id="appStatus" class="app-status" role="status" aria-live="polite"></p>
+        <!-- Catalog and selection panel sit side by side on larger screens. -->
+        <div class="builder-layout">
+          <section class="catalog" aria-labelledby="catalogTitle">
+            <div class="section-heading">
+              <div>
+                <p class="eyebrow">EXPLORE THE COLLECTION</p>
+                <h2 id="catalogTitle">Make it yours</h2>
+              </div>
+              <p id="resultCount" class="result-count" role="status" aria-live="polite">Loading products…</p>
+            </div>
+            <div class="search-section">
+              <div class="field search-field">
+                <label for="productSearch">Search products</label>
+                <input id="productSearch" type="search" placeholder="Try CeraVe, vitamin C, or hydration" autocomplete="off" />
+              </div>
+              <div class="field category-field">
+                <label for="categoryFilter">Category</label>
+                <select id="categoryFilter">
+                  <option value="">All categories</option>
+                  <option value="cleanser">Cleansers</option>
+                  <option value="moisturizer">Moisturizers</option>
+                  <option value="skincare">Skincare &amp; treatments</option>
+                  <option value="haircare">Haircare</option>
+                  <option value="makeup">Makeup</option>
+                  <option value="hair color">Hair color</option>
+                  <option value="hair styling">Hair styling</option>
+                  <option value="men's grooming">Men's grooming</option>
+                  <option value="suncare">Suncare</option>
+                  <option value="fragrance">Fragrance</option>
+                </select>
+              </div>
+            </div>
+            <!-- JavaScript offers a real retry action when the catalog cannot load. -->
+            <div id="catalogStatus" class="catalog-status" role="status" hidden>
+              <p>We couldn’t load the catalog. Please try again.</p>
+              <button id="retryProducts" class="secondary-button" type="button">Try loading products again</button>
+            </div>
+            <div id="productsContainer" class="products-grid" aria-label="Product catalog"></div>
+          </section>
+          <aside class="routine-panel" aria-labelledby="selectionTitle">
+            <div class="panel-intro">
+              <p class="eyebrow">CURATED BY YOU</p>
+              <div class="section-heading">
+                <h2 id="selectionTitle">Your routine</h2>
+                <span id="selectedCount" class="count-badge" aria-label="Selected product count">0</span>
+              </div>
+              <p class="supporting-text">Your selections are saved on this device.</p>
+            </div>
+            <!-- Selected products remain above the Generate Routine button. -->
+            <div class="selected-products">
+              <div class="selection-toolbar">
+                <h3>Selected products</h3>
+                <button id="clearSelection" class="text-button" type="button" disabled>Clear all</button>
+              </div>
+              <div id="selectedProductsList">
+                <p class="empty-selection">A routine starts with a favorite. Select a product from the collection.</p>
+              </div>
+            </div>
+            <div class="preferences">
+              <h3>A little about you</h3>
+              <p class="supporting-text">Optional details help personalize your routine.</p>
+              <div class="field">
+                <label for="skinType">Skin type</label>
+                <select id="skinType">
+                  <option value="Not specified">Choose your skin type</option>
+                  <option value="Normal">Normal</option>
+                  <option value="Dry">Dry</option>
+                  <option value="Oily">Oily</option>
+                  <option value="Combination">Combination</option>
+                  <option value="Sensitive">Sensitive</option>
+                  <option value="Not sure">Not sure</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="routineTime">Routine time</label>
+                <select id="routineTime">
+                  <option value="both">Morning &amp; evening</option>
+                  <option value="morning">Morning</option>
+                  <option value="evening">Evening</option>
+                </select>
+              </div>
+              <div class="field">
+                <label for="goals">Your goals or preferences</label>
+                <textarea id="goals" rows="3" maxlength="600" placeholder="For example: a simple routine for dry skin, or a little more shine for my curls."></textarea>
+              </div>
+            </div>
+            <button id="generateRoutine" class="generate-btn" type="button" disabled>Generate Routine</button>
+            <p class="panel-note">Select at least one product to get started.</p>
+          </aside>
+        </div>
+        <!-- Replies and follow-up questions share one conversation. -->
+        <section class="chatbox" aria-labelledby="chatTitle">
+          <div class="chat-header">
+            <div>
+              <p class="eyebrow">YOUR PERSONAL BEAUTY ADVISOR</p>
+              <h2 id="chatTitle">Let's talk routine.</h2>
+            </div>
+            <button id="resetChat" class="text-button" type="button">New conversation</button>
+          </div>
+          <div id="chatWindow" class="chat-window" role="log" aria-label="Conversation with your beauty advisor" aria-live="polite" aria-relevant="additions text">
+            <div class="chat-welcome">
+              <span class="welcome-symbol" aria-hidden="true">✦</span>
+              <h3>Good things start with your favorites.</h3>
+              <p>Select your products and generate a routine, then ask follow-up questions here.</p>
+            </div>
+          </div>
+          <p id="chatStatus" class="chat-status" role="status" aria-live="polite"></p>
+          <form id="chatForm" class="chat-form">
+            <label for="userInput" class="visually-hidden">Ask a follow-up question</label>
+            <input id="userInput" name="userInput" type="text" maxlength="2000" placeholder="Ask about order, timing, or adapting your routine…" autocomplete="off" required />
+            <button type="submit" id="sendBtn" class="primary-button">Send</button>
+          </form>
+          <div class="chat-options">
+            <div>
+              <label class="checkbox-label" for="includeWebSources">
+                <input id="includeWebSources" type="checkbox" />
+                Search the web for current information
+              </label>
+              <p class="search-note">Uses a search model when supported by the class service.</p>
+            </div>
+            <p>AI guidance can make mistakes. Follow the directions on your products.</p>
+          </div>
+        </section>
+        <!-- The only setup value is a public class-hosted Worker address. -->
+        <details id="connectionSettings" class="connection-settings">
+          <summary>Advisor connection settings</summary>
+          <p>Use the public Cloudflare Worker URL provided by your class. No API key is needed.</p>
+          <form id="workerForm" class="worker-form">
+            <div class="field">
+              <label for="workerUrl">Class Cloudflare Worker URL</label>
+              <input id="workerUrl" type="url" placeholder="https://your-class-worker.workers.dev/" inputmode="url" autocomplete="off" aria-describedby="workerStatus" required />
+            </div>
+            <button id="saveWorker" class="secondary-button" type="submit">Save connection</button>
+          </form>
+          <p id="workerStatus" class="worker-status" role="status" aria-live="polite">Add your class Worker URL to connect the AI advisor.</p>
+        </details>
+      </main>
       <footer class="site-footer">
-        <p>&copy; 2025 L'Oréal. All rights reserved.</p>
-        <nav>
-          <!-- These URLs are placeholders -->
-          <a href="#">Privacy Policy</a>
-          <a href="#">Terms of Use</a>
-          <a href="#">Contact</a>
-        </nav>
+        <p>L'Oréal Product-Aware Routine Builder</p>
+        <p>A student learning project. Brand names and images belong to their respective owners.</p>
       </footer>
     </div>
-
-    <script src="script.js"></script>
+    <noscript>This routine builder needs JavaScript. Please enable JavaScript to browse products and chat with the advisor.</noscript>
   </body>
 </html>

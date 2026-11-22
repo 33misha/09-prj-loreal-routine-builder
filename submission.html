@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Project 9 | Submission and Reflections</title>
+    <style>
+      /* This separate report is readable on screen and when printed to PDF. */
+      * { box-sizing: border-box; }
+      body { margin: 0; background: #f3f3f3; color: #202020; font: 1rem/1.65 Arial, sans-serif; }
+      main { max-width: 900px; margin: 2rem auto; padding: 3rem; background: white; border-top: 6px solid #ff003b; }
+      h1 { line-height: 1.15; font-size: 2rem; margin-top: .5rem; }
+      h2 { font-size: 1.25rem; line-height: 1.4; margin-top: 2rem; break-after: avoid; }
+      p { margin: .8rem 0; }
+      a { color: #a00027; overflow-wrap: anywhere; }
+      .eyebrow { font-size: .875rem; font-weight: bold; letter-spacing: .08em; color: #6c500a; }
+      .notice { padding: 1rem 1.25rem; border-inline-start: 4px solid #e3a535; background: #fff8e8; }
+      .status { font-weight: bold; }
+      li { margin-block: .5rem; }
+      code { font-size: .95em; }
+      footer { margin-top: 2rem; border-top: 1px solid #ccc; padding-top: 1rem; font-size: .875rem; }
+      @media (max-width: 600px) { main { margin: 0; padding: 1.5rem; } }
+      @media print {
+        @page { size: Letter; margin: .65in; }
+        body { background: white; font-size: 10.5pt; line-height: 1.5; }
+        main { max-width: none; margin: 0; padding: 0; border-top-width: 4px; }
+        .screen-note { display: none; }
+        h1 { font-size: 23pt; }
+        h2 { font-size: 13pt; }
+        p, li { orphans: 3; widows: 3; }
+        a { color: inherit; }
+        .notice { background: white; }
+      }
+    </style>
+  </head>
+  <body>
+    <main>
+      <header>
+        <p class="eyebrow">WEB DEVELOPMENT · PROJECT 9</p>
+        <h1>L’Oréal Product-Aware Routine Builder Chatbot</h1>
+        <p>Submission details and reflection drafts</p>
+      </header>
+      <div class="notice">
+        <p class="status">Implementation prepared; final connection and publication checks pending.</p>
+        <p>These first-person answers are drafts for the student to review and personalize. They do not claim unconfirmed live API tests, prompt experiments, or publication.</p>
+        <p class="screen-note">After reviewing and updating this report, use your browser’s Print → Save as PDF. Copy the answers into the course document if your submission requires its original format.</p>
+      </div>
+
+      <section aria-labelledby="website">
+        <h2 id="website">1. Paste your website’s URL</h2>
+        <p>Expected GitHub Pages URL: <a href="https://33misha.github.io/09-prj-loreal-routine-builder/">https://33misha.github.io/09-prj-loreal-routine-builder/</a></p>
+        <p><strong>Not yet verified as published.</strong> Confirm this live link after connecting the class Worker, deploying, and testing in a private browser. Submit the website URL, not the repository or Codespace address.</p>
+      </section>
+
+      <section aria-labelledby="levelups">
+        <h2 id="levelups">1B. Did you do any of the LevelUps? To help the evaluator notice—and give you the bonus points you deserve!—please list them here:</h2>
+        <ul>
+          <li><strong>Product search:</strong> Real-time keyword filtering across name, brand, category, and description works alongside category selection and shows the result count.</li>
+          <li><strong>RTL language support:</strong> A persistent direction toggle adjusts the product grid, selected products, and chat. Layout direction changes; the English catalog is not presented as translated content.</li>
+          <li><strong>Web search:</strong> The frontend requests <code>gpt-5-search-api</code> with <code>web_search_options</code> and renders actual returned citation metadata. <strong>Live Worker/model support and real citations are pending.</strong> Claim this bonus only after the final live test succeeds.</li>
+        </ul>
+      </section>
+
+      <section aria-labelledby="prompt">
+        <h2 id="prompt">2. You controlled what the AI saw and how it responded using a system prompt. What did you learn about writing better prompts? Did you try any different versions? How did you make sure the AI stayed on topic and useful?</h2>
+        <p>I learned that a useful prompt needs to explain the advisor’s role, the data it should rely on, and the kind of answer the user needs. A general instruction like “make a beauty routine” leaves too many details open. The finished system prompt identifies the assistant as a L’Oréal beauty advisor, supplies the selected products as JSON, and asks for numbered steps with exact product names, order, frequency, and morning or evening guidance. Optional skin type and goals make the request more personal without making those details mandatory.</p>
+        <p>I also learned that giving the model context is part of prompt writing. Each request includes the successful conversation history and a fresh system message containing the current selection. That lets follow-up questions refer to the routine while also making it clear when a user changes products. The prompt asks the advisor to stay within beauty and routine topics, redirect unrelated requests, avoid inventing products or claims, and ask for clarification when necessary. It also explains that not every selected product must be forced into the same routine.</p>
+        <p>I have not yet confirmed comparisons between different prompt versions against the live class Worker, so I would not claim that I ran those experiments. My next comparison would be a broad prompt versus this more specific prompt using the same selected products, followed by a question about product order and an unrelated question. I would check whether the response uses the correct products, explains a practical order, remembers the previous turn, and stays on topic.</p>
+      </section>
+
+      <section aria-labelledby="roadblock">
+        <h2 id="roadblock">3. Working with a mix of code, data, and AI often means things don’t work exactly how you expect. Describe a moment in this project when something didn’t go the way you thought it would—in the UI, the API response, or somewhere in between. What did you do to figure it out?</h2>
+        <p>A concrete roadblock in the starter was the relationship between the category menu and the product data. The catalog contains products with the category <code>skincare</code>, including treatment products, but that category was missing from the original dropdown. A menu label that mentioned treatments did not automatically make those products match: the JavaScript compares the actual category values. Comparing the dropdown options with the categories in <code>products.json</code> showed why some products would be difficult to discover through the available filters. The finished menu includes a separate “Skincare &amp; treatments” option with the exact value <code>skincare</code>, plus an “All categories” option.</p>
+        <p>This helped me see that debugging starts with the data the code actually uses. I applied the same idea to selections and conversation state. Saved selections store product IDs and reconnect them to the current catalog after a reload, rather than saving a second copy of every product. Chat requests keep the full successful history so a follow-up does not lose the routine’s context. The interface also handles catalog-loading errors, unavailable storage, failed requests, and missing citations with clear messages instead of claiming success.</p>
+        <p>The external connection is still a separate final check: the supplied materials did not include a working class Worker URL. I kept an explicit placeholder and documented how to replace it with the public class endpoint. That avoids confusing implemented frontend behavior with a confirmed live AI response. The lesson for me is to check each boundary—data, visible state, saved state, request payload, and service response—rather than assuming one successful step proves the whole application works.</p>
+      </section>
+
+      <section aria-labelledby="linkedin">
+        <h2 id="linkedin">4. Write a short LinkedIn post reflecting on what you learned while building your routine builder and chatbot.</h2>
+        <p>I’ve been building a L’Oréal product-aware routine builder with HTML, CSS, and JavaScript. The project connects a real product catalog with an AI chat experience: users can filter products, save their selections, and request a routine tailored to their preferences.</p>
+        <p>The most useful lessons were keeping the interface in sync with application state, using <code>localStorage</code> for saved products, and sending conversation history so follow-up questions have context. I also added keyword search, accessible product descriptions, an RTL layout option, and citation rendering for an optional web-search mode.</p>
+        <p>My next milestone is connecting the class-hosted Cloudflare Worker and checking the live routine, follow-up answers, and web citations before publishing. This project has made the connection between product data, JavaScript, and prompt design much clearer to me.</p>
+        <p>Live project link to add after publication: https://33misha.github.io/09-prj-loreal-routine-builder/</p>
+        <p>#JavaScript #WebDevelopment #AI #LearningInPublic</p>
+      </section>
+
+      <section aria-labelledby="remaining">
+        <h2 id="remaining">Final submission checklist</h2>
+        <ul>
+          <li>Review these reflection drafts and add only experiments or experiences that actually occurred.</li>
+          <li>Connect the public class Worker URL as the final setup step. Keep API keys out of this frontend.</li>
+          <li>Verify real routine generation, contextual follow-ups, and actual web citations before marking them complete.</li>
+          <li>Commit, push, deploy to GitHub Pages, and test the public page in a private window.</li>
+          <li>Update the live URL, LevelUp status, and pending notes in the final document.</li>
+          <li>Export the reviewed report or completed course document as PDF, then upload it and the live website URL to HQ.</li>
+        </ul>
+      </section>
+      <footer>
+        <p>The rubric totals 80 required points plus 25 optional points. See README.md for the criterion mapping, setup, and validation steps. LinkedIn posting is optional; no public post or course submission has been made by creating this report.</p>
+      </footer>
+    </main>
+  </body>
+</html>

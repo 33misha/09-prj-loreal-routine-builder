@@ -1,2 +1,6 @@
 # Secrets file containing API keys
 secrets.js
+
+# Local browser reports, temporary profiles, screenshots, and document extracts.
+.qa/
+__pycache__/
