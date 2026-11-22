@@ -6,13 +6,13 @@ These first-person answers are **drafts for the student to review and personaliz
 
 [https://33misha.github.io/09-prj-loreal-routine-builder/](https://33misha.github.io/09-prj-loreal-routine-builder/)
 
-This is the verified GitHub Pages website address, rather than the repository or Codespace link. Eight checks passed on the published site in a clean browser, including real routine generation and a contextual follow-up without saved connection settings.
+This is the verified GitHub Pages website address, rather than the repository or Codespace link. Eight production chat checks and ten live web-search checks passed in clean browser sessions, including real routines, contextual follow-ups, and visible official-source citations.
 
 ## 1B. Did you do any of the LevelUps? To help the evaluator notice—and give you the bonus points you deserve!—please list them here:
 
 - **Product search:** Real-time search filters by product name, brand, category, and description. It works with the category dropdown and updates the result count.
 - **RTL language support:** A saved direction toggle adjusts the product grid, selected products area, and chat between LTR and RTL. It changes layout direction without claiming that the English catalog is translated.
-- **Web search is not claimed:** The frontend requests a search-capable model and can render actual citations, but the live class Worker rejects search requests because it supplies an incompatible `temperature` argument. The Worker also needs to preserve citation metadata before this bonus can be completed.
+- **Live web search:** An optional mode requests `gpt-5-search-api` through the Worker and shows clickable citations from real response metadata. The deployed service returned a sourced answer about a selected CeraVe product, and the official product-page citation appeared in the chat. All ten production web-search checks passed.
 
 ## 2. You controlled what the AI saw and how it responded using a system prompt. What did you learn about writing better prompts? Did you try any different versions? How did you make sure the AI stayed on topic and useful?
 
@@ -28,7 +28,7 @@ One roadblock appeared when connecting the real class Worker. The frontend expec
 
 Another issue was the relationship between the category dropdown and product data. The catalog included `skincare` treatments, but the original menu did not have that category value. Comparing the dropdown values with `products.json` identified the problem. Adding a “Skincare & treatments” option with the exact value `skincare`, along with “All categories,” made the catalog easier to browse correctly.
 
-These issues taught me to inspect the data crossing each boundary: the catalog, selected IDs, request messages, response body, and visible chat. The optional search mode exposed another boundary: the Worker adds a `temperature` argument that the search model rejects. That needs a server-side fix, so I documented it instead of presenting ordinary generated links as proof of live search. My main lesson is that a clear error and an honest diagnosis are more useful than assuming a request worked because one part of the process succeeded.
+These issues taught me to inspect the data crossing each boundary: the catalog, selected IDs, request messages, response body, and visible chat. The optional search mode exposed another boundary: the original Worker added a `temperature` argument that the search model rejected. The corrected Worker omits that setting for search, forwards search options, and preserves citation annotations. After deployment, a real browser test received a sourced answer with an official CeraVe link, and standard routine generation and follow-ups still worked. My main lesson is to confirm both the data format and the final user-visible result rather than assuming one successful step proves the whole application works.
 
 ## 4. Write a short LinkedIn post reflecting on what you learned while building your routine builder and chatbot.
 
@@ -36,7 +36,7 @@ I built a L’Oréal product-aware routine builder with HTML, CSS, and JavaScrip
 
 The biggest lessons were keeping the interface in sync with application state, using `localStorage` for saved products, and sending the full conversation so follow-up questions have context. Connecting the live service also taught me to inspect response formats: a valid API reply still needs to match what the frontend reads.
 
-The project includes accessible product descriptions and an RTL layout option. Live routine generation and contextual follow-ups passed browser checks. Optional live web search is my remaining improvement; I identified the Worker compatibility issue and documented the change it needs.
+The project includes accessible product descriptions, an RTL layout option, and optional live web search with visible source citations. Routine generation, contextual follow-ups, and sourced product answers passed checks on the published website. Fixing a server parameter mismatch and preserving citation metadata helped me understand how frontend and backend behavior fit together.
 
 Explore the project: https://33misha.github.io/09-prj-loreal-routine-builder/
 
@@ -48,7 +48,7 @@ Explore the project: https://33misha.github.io/09-prj-loreal-routine-builder/
 
 - Review these drafts so they reflect your learning and contributions accurately. Add only prompt comparisons or experiments that actually occurred.
 - Check the published GitHub Pages page and latest routine/follow-up behavior in a fresh private browser.
-- List product search and RTL as completed bonuses. Do not claim the web-search bonus until the Worker is fixed and real citations are verified.
+- List all three completed bonuses: product search, RTL layout support, and live web search with visible citations.
 - Use the updated `submission.pdf`, or print `submission.html` to PDF. Copy the reviewed answers into the course document if required, then export it as PDF.
 - Upload the completed PDF and live website URL through HQ.
 

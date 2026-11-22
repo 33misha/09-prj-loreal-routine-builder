@@ -41,8 +41,8 @@
         <p>Submission details and reflection drafts</p>
       </header>
       <div class="notice">
-        <p class="status">Live routine generation and contextual follow-ups verified.</p>
-        <p>Local regression checks: 24 passed. Real Worker browser assertions: 10 passed. Published-site checks in a clean browser: 8 passed. Product search and RTL are completed LevelUps. The optional web-search bonus needs a backend change and is not claimed.</p>
+        <p class="status">All required features and all three LevelUps implemented and verified.</p>
+        <p>Local regression checks: 24 passed. Offline Worker checks: 11 passed. Initial live Worker browser assertions: 10 passed. Published-site chat checks after deployment: 8 passed. Production web-search checks: 10 passed, including real citation metadata and a visible official-source link.</p>
         <p>These first-person answers are drafts for the student to review and personalize. They do not invent prompt comparisons or claim a guaranteed grade.</p>
         <p class="screen-note">After review, use Print → Save as PDF. Copy answers into the original course document if its format is required.</p>
       </div>
@@ -50,7 +50,7 @@
       <section aria-labelledby="website">
         <h2 id="website">1. Paste your website’s URL</h2>
         <p><a href="https://33misha.github.io/09-prj-loreal-routine-builder/">https://33misha.github.io/09-prj-loreal-routine-builder/</a></p>
-        <p>This is the verified GitHub Pages website address, rather than the repository or Codespace link. Eight checks passed on the published site in a clean browser, including real routine generation and a contextual follow-up without saved connection settings.</p>
+        <p>This is the verified GitHub Pages website address, rather than the repository or Codespace link. Eight production chat checks and ten live web-search checks passed in clean browser sessions, including real routines, contextual follow-ups, and visible official-source citations.</p>
       </section>
 
       <section aria-labelledby="levelups">
@@ -58,7 +58,7 @@
         <ul>
           <li><strong>Product search:</strong> Real-time keyword filtering across name, brand, category, and description works alongside category selection and updates the result count.</li>
           <li><strong>RTL language support:</strong> A saved direction toggle adjusts the product grid, selected products, and chat between LTR and RTL. It changes direction without claiming that the English catalog is translated.</li>
-          <li><strong>Web search is not claimed:</strong> The frontend requests a search-capable model and renders actual citations, but the live Worker rejects search requests because it supplies an incompatible <code>temperature</code> argument. The Worker also needs to preserve citation metadata before this bonus can be completed.</li>
+          <li><strong>Live web search:</strong> An optional mode requests <code>gpt-5-search-api</code> through the Worker and shows clickable citations from real response metadata. The deployed service returned a sourced answer about a selected CeraVe product, and the official product-page citation appeared in the chat. All ten production web-search checks passed.</li>
         </ul>
       </section>
 
@@ -73,28 +73,28 @@
         <h2 id="roadblock">3. Working with a mix of code, data, and AI often means things don’t work exactly how you expect. Describe a moment in this project when something didn’t go the way you thought it would—in the UI, the API response, or somewhere in between. What did you do to figure it out?</h2>
         <p>One roadblock appeared when connecting the real class Worker. The frontend expected the standard Chat Completions response at <code>data.choices[0].message.content</code>, but the service returned a successful response shaped as <code>{ "reply": "…" }</code>. A successful HTTP status did not automatically mean that the page could find the answer. Inspecting the actual response body showed the mismatch. The solution was to normalize the Worker’s reply into the standard message structure while continuing to accept a normal <code>choices</code> response. A live browser check then confirmed that the generated routine and contextual follow-up both appeared in the chat.</p>
         <p>Another issue was the relationship between the category dropdown and product data. The catalog included <code>skincare</code> treatments, but the original menu did not have that category value. Comparing the dropdown values with <code>products.json</code> identified the problem. Adding a “Skincare &amp; treatments” option with the exact value <code>skincare</code>, along with “All categories,” made the catalog easier to browse correctly.</p>
-        <p>These issues taught me to inspect the data crossing each boundary: the catalog, selected IDs, request messages, response body, and visible chat. The optional search mode exposed another boundary: the Worker adds a <code>temperature</code> argument that the search model rejects. That needs a server-side fix, so I documented it instead of presenting ordinary generated links as proof of live search. My main lesson is that a clear error and an honest diagnosis are more useful than assuming a request worked because one part of the process succeeded.</p>
+        <p>These issues taught me to inspect the data crossing each boundary: the catalog, selected IDs, request messages, response body, and visible chat. The optional search mode exposed another boundary: the original Worker added a <code>temperature</code> argument that the search model rejected. The corrected Worker omits that setting for search, forwards search options, and preserves citation annotations. After deployment, a real browser test received a sourced answer with an official CeraVe link, and standard routine generation and follow-ups still worked. My main lesson is to confirm both the data format and the final user-visible result rather than assuming one successful step proves the whole application works.</p>
       </section>
 
       <section aria-labelledby="linkedin">
         <h2 id="linkedin">4. Write a short LinkedIn post reflecting on what you learned while building your routine builder and chatbot.</h2>
         <p>I built a L’Oréal product-aware routine builder with HTML, CSS, and JavaScript. Users can browse real product data, combine keyword and category filters, save their selections, and generate a personalized routine through a class-hosted Cloudflare Worker.</p>
         <p>The biggest lessons were keeping the interface in sync with application state, using <code>localStorage</code> for saved products, and sending the full conversation so follow-up questions have context. Connecting the live service also taught me to inspect response formats: a valid API reply still needs to match what the frontend reads.</p>
-        <p>The project includes accessible product descriptions and an RTL layout option. Live routine generation and contextual follow-ups passed browser checks. Optional live web search is my remaining improvement; I identified the Worker compatibility issue and documented the change it needs.</p>
+        <p>The project includes accessible product descriptions, an RTL layout option, and optional live web search with visible source citations. Routine generation, contextual follow-ups, and sourced product answers passed checks on the published website. Fixing a server parameter mismatch and preserving citation metadata helped me understand how frontend and backend behavior fit together.</p>
         <p>Explore the project: <a href="https://33misha.github.io/09-prj-loreal-routine-builder/">https://33misha.github.io/09-prj-loreal-routine-builder/</a></p>
         <p>#JavaScript #WebDevelopment #AI #LearningInPublic</p>
       </section>
 
       <section aria-labelledby="rubric">
         <h2 id="rubric">Rubric cross-examination</h2>
-        <p><strong>Supported coverage: 80 required points plus 15 completed bonus points = criteria worth 95/105 points.</strong> This is a coverage assessment, not an awarded or guaranteed grade. The 10-point live web-search bonus remains blocked by the current Worker.</p>
+        <p><strong>Supported coverage: 80 required points plus all 25 bonus points = criteria worth 105/105 points.</strong> This is an implementation and evidence assessment, not an awarded or guaranteed grade. All three reflection drafts still need personal review before submission.</p>
         <ul>
           <li><strong>Selection, saved products, descriptions, product search, and RTL:</strong> local browser checks passed, including real page reloads and narrow-screen layouts.</li>
           <li><strong>Generation, contextual chat, and Worker integration:</strong> real HTTP 200 replies used both selected products and previous messages; both replies appeared in chat. Browser CORS preflight returned 204. Eight additional checks passed on the actual published GitHub Pages site with no saved settings.</li>
           <li><strong>All three reflection answers:</strong> substantial drafts provided for personal review. LinkedIn posting is optional.</li>
-          <li><strong>Web search:</strong> real HTTP 400 error reported “Model incompatible request argument supplied: temperature.” The server must omit that setting for the search model and return real citation metadata.</li>
+          <li><strong>Web search:</strong> the deployed Worker returned HTTP 200 and confirmed <code>gpt-5-search-api-2025-10-14</code>. Real citation annotations were displayed as a clickable official CeraVe source. All ten production search checks passed, and the cited page was independently opened.</li>
         </ul>
-        <p>See <code>RUBRIC_REVIEW.md</code> for the complete criterion table and backend repair fragments. No live search success is claimed.</p>
+        <p>See <code>RUBRIC_REVIEW.md</code> for the complete criterion table and final live verification evidence.</p>
       </section>
 
       <section aria-labelledby="remaining">
@@ -102,7 +102,7 @@
         <ul>
           <li>Review the reflection drafts for personal accuracy; add only comparisons or experiences that actually occurred.</li>
           <li>Check the latest GitHub Pages deployment in a fresh private browser and confirm routine/follow-up behavior.</li>
-          <li>List product search and RTL as completed bonuses; claim web search only after a server fix and verified live citations.</li>
+          <li>List all three completed bonuses: product search, RTL layout support, and live web search with visible citations.</li>
           <li>Export the latest report or completed course document as PDF, then upload it and the live website URL through HQ.</li>
         </ul>
       </section>
