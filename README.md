@@ -1,12 +1,10 @@
 ﻿# L’Oréal Product-Aware Routine Builder
 
-A plain HTML, CSS, and JavaScript project for browsing 35 L’Oréal brand products, saving selections, and generating personalized beauty routines. The interface uses the assignment’s red `#ff003b` and gold `#e3a535`.
+A plain HTML, CSS, and JavaScript project for browsing 35 L’Oréal brand products, saving selections, and generating personalized beauty routines. The interface uses red `#ff003b` and gold `#e3a535` accents.
 
 **Website:** [https://33misha.github.io/09-prj-loreal-routine-builder/](https://33misha.github.io/09-prj-loreal-routine-builder/)
 
 **Class Worker:** [https://loreal-chatbot.kosulinma.workers.dev/](https://loreal-chatbot.kosulinma.workers.dev/) is configured in `script.js`. Worker version `routine-search-v1` is deployed. Real routine generation, contextual follow-ups, and live web search with visible citations have passed checks on the published website.
-
-The published GitHub Pages website was verified in a clean browser without saved connection settings. It loaded all 35 products, generated a real two-product routine, and answered a contextual follow-up.
 
 ## Run locally
 
@@ -43,9 +41,9 @@ Only the Worker holds the OpenAI key. **Never put a key, password, or credential
 
 The **Search the web for current information** checkbox requests `gpt-5-search-api` with `web_search_options: { search_context_size: "low" }`. Standard requests use `gpt-4.1`.
 
-The deployed Worker omits unsupported sampling settings for search requests, forwards search options, and preserves citation metadata. A real request from the published website returned HTTP 200 and confirmed model `gpt-5-search-api-2025-10-14`. The response cited the official CeraVe Moisturizing Cream page; the frontend displayed that citation as a clickable **Web sources** link. The source page was opened independently and matched the checked product information.
+The deployed Worker omits unsupported sampling settings for search requests, forwards search options, and preserves citation metadata. The frontend displays returned citations as clickable **Web sources** links.
 
-`sources.js` displays returned `url_citation` metadata and deduplicates repeated sources. Ordinary model-generated links alone are not counted as evidence of live search. Missing metadata still produces an explicit warning. All 10 production web-search checks passed. See the [official OpenAI web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for the Chat Completions search integration.
+`sources.js` reads `url_citation` metadata and deduplicates repeated sources. Missing metadata produces an explicit warning. See the [official OpenAI web search guide](https://developers.openai.com/api/docs/guides/tools-web-search) for the Chat Completions search integration.
 
 ## Project files
 
@@ -56,35 +54,13 @@ The deployed Worker omits unsupported sampling settings for search requests, for
 | `script.js` | Filtering, selection, storage, history, Worker requests |
 | `sources.js` | Safe assistant formatting and returned citations |
 | `cloudflare-worker.txt` | Complete server replacement for the existing Worker; no secret values |
-| `WORKER_DEPLOYMENT.md` | Verified deployment status and future Worker deployment instructions |
 | `products.json` | Supplied product data and image URLs |
-| `RUBRIC_REVIEW.md` | Final criterion-by-criterion implementation and verification evidence |
-| `REFLECTIONS.md` | Reviewable reflection answers |
-| `submission.html` / `submission.pdf` | Printable submission report and PDF export |
 
 Product images use the supplied external URLs. If an image fails, the product name, description, and selection control remain available.
 
-## Verification and rubric coverage
-
-- **24 local browser integration checks passed**, covering catalog/categories, selection, actual page reloads, search, full history, error recovery, safe output, citation rendering, image bounds, and 320px/375px LTR/RTL layouts. These regression checks used simulated AI responses.
-- **10 live browser assertions passed** using the supplied Worker and real network requests. A generated evening routine named both selected products; the contextual follow-up identified the cleanser as the first step. Both replies appeared in chat, the follow-up sent the previous turns, and no unhandled request error occurred.
-- **8 published-site checks passed again after the Worker deployment** from the actual GitHub Pages origin in a clean browser with no saved settings. The deployed response adapter was present, 35 cards loaded, and the real generation/follow-up requests returned HTTP 200 with two and four messages respectively. Both replies displayed without chat errors.
-- The Worker’s browser `OPTIONS` preflight returned **204**, with CORS permitting the local and GitHub Pages origins.
-- **10 live web-search checks passed** on the published website: deployed version marker, native model/options, HTTP 200, confirmed search model, real citation metadata, relevant answer, visible source links, official source, and no chat errors.
-- **11 offline Worker checks passed** before deployment, covering request validation, model-specific parameters, full conversation forwarding, preserved citations, CORS, and error recovery. The upstream AI response was simulated in these checks.
-
-The rubric totals **80 required points plus 25 optional points = 105**. All required feature implementations, all three bonus features, and substantial reflection drafts now cover criteria worth **105 points**. This is an implementation and evidence assessment, not a guaranteed grade. Review personal reflection accuracy before submitting. See [RUBRIC_REVIEW.md](RUBRIC_REVIEW.md) for the complete cross-examination.
-
-## Publishing and submission
+## Publishing
 
 GitHub Pages is configured for **main / (root)**. After changes, commit and push to `main`, allow Pages to rebuild, and check the published page in a fresh/private browser so saved settings cannot hide a deployment problem.
-
-1. Review `REFLECTIONS.md` and `submission.html` for personal accuracy. Product search, RTL, and live web search are the completed LevelUps.
-2. Verify the live URL above and confirm the latest deployed version can generate a routine and answer a follow-up.
-3. Use the updated `submission.pdf`, or open `submission.html` and choose **Print → Save as PDF**. If the course requires its original document, copy the reviewed answers into it and export that completed document as PDF.
-4. Submit the live GitHub Pages URL and completed PDF to the project submission page on HQ. Use the website URL, not the repository or Codespace URL.
-
-Creating these files does not upload a course submission or publish the optional LinkedIn post.
 
 ## Connection setup
 
