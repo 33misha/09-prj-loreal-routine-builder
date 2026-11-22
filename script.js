@@ -1,6 +1,6 @@
-// Replace this public URL with the class Worker URL when it is available.
-// This is a placeholder, not a working service. Never put an API key here.
-const WORKER_URL = "https://loreal-routine.your-subdomain.workers.dev/";
+// Call the public class Worker. The service keeps the API key on the server.
+// Never put an API key in this frontend.
+const WORKER_URL = "https://loreal-chatbot.kosulinma.workers.dev/";
 
 // Keep the catalog, selections, and successful conversation in memory.
 const STORAGE_KEY = "loreal-selected-products";
