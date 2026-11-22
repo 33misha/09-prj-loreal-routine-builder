@@ -41,62 +41,73 @@
         <p>Submission details and reflection drafts</p>
       </header>
       <div class="notice">
-        <p class="status">Implementation prepared; final connection and publication checks pending.</p>
-        <p>These first-person answers are drafts for the student to review and personalize. They do not claim unconfirmed live API tests, prompt experiments, or publication.</p>
-        <p class="screen-note">After reviewing and updating this report, use your browser’s Print → Save as PDF. Copy the answers into the course document if your submission requires its original format.</p>
+        <p class="status">Live routine generation and contextual follow-ups verified.</p>
+        <p>Local regression checks: 24 passed. Real Worker browser assertions: 10 passed. Published-site checks in a clean browser: 8 passed. Product search and RTL are completed LevelUps. The optional web-search bonus needs a backend change and is not claimed.</p>
+        <p>These first-person answers are drafts for the student to review and personalize. They do not invent prompt comparisons or claim a guaranteed grade.</p>
+        <p class="screen-note">After review, use Print → Save as PDF. Copy answers into the original course document if its format is required.</p>
       </div>
 
       <section aria-labelledby="website">
         <h2 id="website">1. Paste your website’s URL</h2>
-        <p>Expected GitHub Pages URL: <a href="https://33misha.github.io/09-prj-loreal-routine-builder/">https://33misha.github.io/09-prj-loreal-routine-builder/</a></p>
-        <p><strong>Not yet verified as published.</strong> Confirm this live link after connecting the class Worker, deploying, and testing in a private browser. Submit the website URL, not the repository or Codespace address.</p>
+        <p><a href="https://33misha.github.io/09-prj-loreal-routine-builder/">https://33misha.github.io/09-prj-loreal-routine-builder/</a></p>
+        <p>This is the verified GitHub Pages website address, rather than the repository or Codespace link. Eight checks passed on the published site in a clean browser, including real routine generation and a contextual follow-up without saved connection settings.</p>
       </section>
 
       <section aria-labelledby="levelups">
         <h2 id="levelups">1B. Did you do any of the LevelUps? To help the evaluator notice—and give you the bonus points you deserve!—please list them here:</h2>
         <ul>
-          <li><strong>Product search:</strong> Real-time keyword filtering across name, brand, category, and description works alongside category selection and shows the result count.</li>
-          <li><strong>RTL language support:</strong> A persistent direction toggle adjusts the product grid, selected products, and chat. Layout direction changes; the English catalog is not presented as translated content.</li>
-          <li><strong>Web search:</strong> The frontend requests <code>gpt-5-search-api</code> with <code>web_search_options</code> and renders actual returned citation metadata. <strong>Live Worker/model support and real citations are pending.</strong> Claim this bonus only after the final live test succeeds.</li>
+          <li><strong>Product search:</strong> Real-time keyword filtering across name, brand, category, and description works alongside category selection and updates the result count.</li>
+          <li><strong>RTL language support:</strong> A saved direction toggle adjusts the product grid, selected products, and chat between LTR and RTL. It changes direction without claiming that the English catalog is translated.</li>
+          <li><strong>Web search is not claimed:</strong> The frontend requests a search-capable model and renders actual citations, but the live Worker rejects search requests because it supplies an incompatible <code>temperature</code> argument. The Worker also needs to preserve citation metadata before this bonus can be completed.</li>
         </ul>
       </section>
 
       <section aria-labelledby="prompt">
         <h2 id="prompt">2. You controlled what the AI saw and how it responded using a system prompt. What did you learn about writing better prompts? Did you try any different versions? How did you make sure the AI stayed on topic and useful?</h2>
-        <p>I learned that a useful prompt needs to explain the advisor’s role, the data it should rely on, and the kind of answer the user needs. A general instruction like “make a beauty routine” leaves too many details open. The finished system prompt identifies the assistant as a L’Oréal beauty advisor, supplies the selected products as JSON, and asks for numbered steps with exact product names, order, frequency, and morning or evening guidance. Optional skin type and goals make the request more personal without making those details mandatory.</p>
-        <p>I also learned that giving the model context is part of prompt writing. Each request includes the successful conversation history and a fresh system message containing the current selection. That lets follow-up questions refer to the routine while also making it clear when a user changes products. The prompt asks the advisor to stay within beauty and routine topics, redirect unrelated requests, avoid inventing products or claims, and ask for clarification when necessary. It also explains that not every selected product must be forced into the same routine.</p>
-        <p>I have not yet confirmed comparisons between different prompt versions against the live class Worker, so I would not claim that I ran those experiments. My next comparison would be a broad prompt versus this more specific prompt using the same selected products, followed by a question about product order and an unrelated question. I would check whether the response uses the correct products, explains a practical order, remembers the previous turn, and stays on topic.</p>
+        <p>I learned that a useful prompt needs to explain the advisor’s role, the data it should rely on, and the kind of answer the user needs. A general instruction like “make a beauty routine” leaves too many details open. The finished system prompt identifies the assistant as a L’Oréal beauty advisor, supplies selected products as JSON, and asks for numbered steps with exact product names, order, frequency, and morning or evening guidance. Optional skin type and goals make the request more personal without making those details mandatory.</p>
+        <p>Giving the model context is also part of prompt writing. Each request includes the successful conversation history and a fresh system message containing the current selection. That allows a follow-up to refer to the routine while making it clear when products change. The prompt asks the advisor to stay within beauty and routine topics, redirect unrelated requests, avoid inventing products or claims, and ask for clarification when necessary. It also explains that not every selected product must be forced into the same routine. A real browser check generated a routine with the two selected CeraVe products, and the follow-up correctly explained which came first.</p>
+        <p>I have not completed a controlled comparison of different prompt versions, so I would not claim that I ran that experiment. A useful next comparison would be a broad prompt versus this more specific one using identical products and preferences, followed by an order question and an unrelated question. I would compare product accuracy, clear steps, remembered context, and whether the advisor stays on topic. This project showed me why precise instructions and relevant data are more useful than simply making a prompt longer.</p>
       </section>
 
       <section aria-labelledby="roadblock">
         <h2 id="roadblock">3. Working with a mix of code, data, and AI often means things don’t work exactly how you expect. Describe a moment in this project when something didn’t go the way you thought it would—in the UI, the API response, or somewhere in between. What did you do to figure it out?</h2>
-        <p>A concrete roadblock in the starter was the relationship between the category menu and the product data. The catalog contains products with the category <code>skincare</code>, including treatment products, but that category was missing from the original dropdown. A menu label that mentioned treatments did not automatically make those products match: the JavaScript compares the actual category values. Comparing the dropdown options with the categories in <code>products.json</code> showed why some products would be difficult to discover through the available filters. The finished menu includes a separate “Skincare &amp; treatments” option with the exact value <code>skincare</code>, plus an “All categories” option.</p>
-        <p>This helped me see that debugging starts with the data the code actually uses. I applied the same idea to selections and conversation state. Saved selections store product IDs and reconnect them to the current catalog after a reload, rather than saving a second copy of every product. Chat requests keep the full successful history so a follow-up does not lose the routine’s context. The interface also handles catalog-loading errors, unavailable storage, failed requests, and missing citations with clear messages instead of claiming success.</p>
-        <p>The external connection is still a separate final check: the supplied materials did not include a working class Worker URL. I kept an explicit placeholder and documented how to replace it with the public class endpoint. That avoids confusing implemented frontend behavior with a confirmed live AI response. The lesson for me is to check each boundary—data, visible state, saved state, request payload, and service response—rather than assuming one successful step proves the whole application works.</p>
+        <p>One roadblock appeared when connecting the real class Worker. The frontend expected the standard Chat Completions response at <code>data.choices[0].message.content</code>, but the service returned a successful response shaped as <code>{ "reply": "…" }</code>. A successful HTTP status did not automatically mean that the page could find the answer. Inspecting the actual response body showed the mismatch. The solution was to normalize the Worker’s reply into the standard message structure while continuing to accept a normal <code>choices</code> response. A live browser check then confirmed that the generated routine and contextual follow-up both appeared in the chat.</p>
+        <p>Another issue was the relationship between the category dropdown and product data. The catalog included <code>skincare</code> treatments, but the original menu did not have that category value. Comparing the dropdown values with <code>products.json</code> identified the problem. Adding a “Skincare &amp; treatments” option with the exact value <code>skincare</code>, along with “All categories,” made the catalog easier to browse correctly.</p>
+        <p>These issues taught me to inspect the data crossing each boundary: the catalog, selected IDs, request messages, response body, and visible chat. The optional search mode exposed another boundary: the Worker adds a <code>temperature</code> argument that the search model rejects. That needs a server-side fix, so I documented it instead of presenting ordinary generated links as proof of live search. My main lesson is that a clear error and an honest diagnosis are more useful than assuming a request worked because one part of the process succeeded.</p>
       </section>
 
       <section aria-labelledby="linkedin">
         <h2 id="linkedin">4. Write a short LinkedIn post reflecting on what you learned while building your routine builder and chatbot.</h2>
-        <p>I’ve been building a L’Oréal product-aware routine builder with HTML, CSS, and JavaScript. The project connects a real product catalog with an AI chat experience: users can filter products, save their selections, and request a routine tailored to their preferences.</p>
-        <p>The most useful lessons were keeping the interface in sync with application state, using <code>localStorage</code> for saved products, and sending conversation history so follow-up questions have context. I also added keyword search, accessible product descriptions, an RTL layout option, and citation rendering for an optional web-search mode.</p>
-        <p>My next milestone is connecting the class-hosted Cloudflare Worker and checking the live routine, follow-up answers, and web citations before publishing. This project has made the connection between product data, JavaScript, and prompt design much clearer to me.</p>
-        <p>Live project link to add after publication: https://33misha.github.io/09-prj-loreal-routine-builder/</p>
+        <p>I built a L’Oréal product-aware routine builder with HTML, CSS, and JavaScript. Users can browse real product data, combine keyword and category filters, save their selections, and generate a personalized routine through a class-hosted Cloudflare Worker.</p>
+        <p>The biggest lessons were keeping the interface in sync with application state, using <code>localStorage</code> for saved products, and sending the full conversation so follow-up questions have context. Connecting the live service also taught me to inspect response formats: a valid API reply still needs to match what the frontend reads.</p>
+        <p>The project includes accessible product descriptions and an RTL layout option. Live routine generation and contextual follow-ups passed browser checks. Optional live web search is my remaining improvement; I identified the Worker compatibility issue and documented the change it needs.</p>
+        <p>Explore the project: <a href="https://33misha.github.io/09-prj-loreal-routine-builder/">https://33misha.github.io/09-prj-loreal-routine-builder/</a></p>
         <p>#JavaScript #WebDevelopment #AI #LearningInPublic</p>
       </section>
 
-      <section aria-labelledby="remaining">
-        <h2 id="remaining">Final submission checklist</h2>
+      <section aria-labelledby="rubric">
+        <h2 id="rubric">Rubric cross-examination</h2>
+        <p><strong>Supported coverage: 80 required points plus 15 completed bonus points = criteria worth 95/105 points.</strong> This is a coverage assessment, not an awarded or guaranteed grade. The 10-point live web-search bonus remains blocked by the current Worker.</p>
         <ul>
-          <li>Review these reflection drafts and add only experiments or experiences that actually occurred.</li>
-          <li>Connect the public class Worker URL as the final setup step. Keep API keys out of this frontend.</li>
-          <li>Verify real routine generation, contextual follow-ups, and actual web citations before marking them complete.</li>
-          <li>Commit, push, deploy to GitHub Pages, and test the public page in a private window.</li>
-          <li>Update the live URL, LevelUp status, and pending notes in the final document.</li>
-          <li>Export the reviewed report or completed course document as PDF, then upload it and the live website URL to HQ.</li>
+          <li><strong>Selection, saved products, descriptions, product search, and RTL:</strong> local browser checks passed, including real page reloads and narrow-screen layouts.</li>
+          <li><strong>Generation, contextual chat, and Worker integration:</strong> real HTTP 200 replies used both selected products and previous messages; both replies appeared in chat. Browser CORS preflight returned 204. Eight additional checks passed on the actual published GitHub Pages site with no saved settings.</li>
+          <li><strong>All three reflection answers:</strong> substantial drafts provided for personal review. LinkedIn posting is optional.</li>
+          <li><strong>Web search:</strong> real HTTP 400 error reported “Model incompatible request argument supplied: temperature.” The server must omit that setting for the search model and return real citation metadata.</li>
+        </ul>
+        <p>See <code>RUBRIC_REVIEW.md</code> for the complete criterion table and backend repair fragments. No live search success is claimed.</p>
+      </section>
+
+      <section aria-labelledby="remaining">
+        <h2 id="remaining">Before submitting</h2>
+        <ul>
+          <li>Review the reflection drafts for personal accuracy; add only comparisons or experiences that actually occurred.</li>
+          <li>Check the latest GitHub Pages deployment in a fresh private browser and confirm routine/follow-up behavior.</li>
+          <li>List product search and RTL as completed bonuses; claim web search only after a server fix and verified live citations.</li>
+          <li>Export the latest report or completed course document as PDF, then upload it and the live website URL through HQ.</li>
         </ul>
       </section>
       <footer>
-        <p>The rubric totals 80 required points plus 25 optional points. See README.md for the criterion mapping, setup, and validation steps. LinkedIn posting is optional; no public post or course submission has been made by creating this report.</p>
+        <p>The rubric totals 80 required plus 25 optional points. See README.md for setup and RUBRIC_REVIEW.md for evidence. LinkedIn posting is optional; no public post or course upload is made by generating this report.</p>
       </footer>
     </main>
   </body>
