@@ -288,6 +288,11 @@ async function requestReply(content, visibleContent) {
     let data;
     try { data = await response.json(); }
     catch { throw new Error("The class service returned an unreadable reply. Please try again."); }
+    // The class Worker returns { reply: "..." }. Also accept the standard
+    // Chat Completions shape so services that preserve citations work too.
+    if (typeof data?.reply === "string" && !data.choices) {
+      data.choices = [{ message: { role: "assistant", content: data.reply, annotations: data.annotations } }];
+    }
     const assistant = data?.choices?.[0]?.message;
     if (data?.error || typeof assistant?.content !== "string" || !assistant.content.trim()) {
       throw new Error("The class service returned no reply. Check the Worker connection and try again.");
