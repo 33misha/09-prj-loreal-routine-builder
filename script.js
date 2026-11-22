@@ -291,7 +291,7 @@ async function requestReply(content, visibleContent) {
     // The class Worker returns { reply: "..." }. Also accept the standard
     // Chat Completions shape so services that preserve citations work too.
     if (typeof data?.reply === "string" && !data.choices) {
-      data.choices = [{ message: { role: "assistant", content: data.reply, annotations: data.annotations } }];
+      data.choices = [{ message: { role: "assistant", content: data.reply, annotations: data.annotations || data.citations } }];
     }
     const assistant = data?.choices?.[0]?.message;
     if (data?.error || typeof assistant?.content !== "string" || !assistant.content.trim()) {

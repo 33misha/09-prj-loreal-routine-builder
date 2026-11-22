@@ -1,0 +1,101 @@
+/**
+ * Paste this server-only module into the existing loreal-chatbot Worker.
+ * Keep the existing OPENAI_API_KEY secret binding unchanged.
+ * This text file contains no secret and is never loaded by index.html.
+ */
+
+const SYSTEM_PROMPT = "You are the L'Oréal Beauty Assistant. Help with L'Oréal products, skincare, haircare, makeup, fragrance, grooming, sun care, and beauty routines. Politely redirect unrelated questions. Use the selected product data and conversation supplied by the frontend. Do not invent product claims or sources. When using web search, cite the real sources returned by the search model.";
+
+// Preserve the existing browser access policy and preflight support.
+const CORS_HEADERS = {
+  "Access-Control-Allow-Origin": "*",
+  "Access-Control-Allow-Methods": "POST, GET, OPTIONS",
+  "Access-Control-Allow-Headers": "Content-Type",
+};
+
+// Every JSON reply includes CORS headers, including error replies.
+function json(data, status = 200) {
+  return new Response(JSON.stringify(data), {
+    status,
+    headers: { "Content-Type": "application/json", ...CORS_HEADERS },
+  });
+}
+
+// Cloudflare requires this module entry point for server code.
+// It is separate from the project's ordinary browser scripts.
+export default {
+  async fetch(request, env) {
+    if (request.method === "OPTIONS") {
+      return new Response(null, { status: 204, headers: CORS_HEADERS });
+    }
+    if (request.method === "GET") {
+      return json({ status: "ok", service: "L'Oréal Chatbot Worker", version: "routine-search-v1" });
+    }
+    if (request.method !== "POST") {
+      return json({ error: "Method not allowed" }, 405);
+    }
+    if (!env.OPENAI_API_KEY) {
+      return json({ error: "The class service is not configured. Contact the service maintainer." }, 500);
+    }
+
+    // Read JSON separately so an invalid request receives a useful 400 reply.
+    let body;
+    try {
+      body = await request.json();
+    } catch {
+      return json({ error: "Send a JSON object with a messages array." }, 400);
+    }
+    const allowedRoles = ["system", "user", "assistant"];
+    if (!Array.isArray(body?.messages) || !body.messages.length ||
+        !body.messages.every((message) => message && allowedRoles.includes(message.role) && typeof message.content === "string")) {
+      return json({ error: "Send a non-empty messages array with valid roles and text content." }, 400);
+    }
+
+    // Standard requests use the required model. Only the optional search mode
+    // selects the search model; all previous conversation turns are preserved.
+    const model = body.model || "gpt-4.1";
+    if (!["gpt-4.1", "gpt-5-search-api"].includes(model)) {
+      return json({ error: "Choose gpt-4.1 or gpt-5-search-api." }, 400);
+    }
+    const payload = {
+      model,
+      messages: [{ role: "system", content: SYSTEM_PROMPT }, ...body.messages],
+    };
+    if (model === "gpt-5-search-api") {
+      // The search model rejects temperature, including null. Omit it entirely.
+      // Forward the search option used by the frontend instead.
+      const size = body.web_search_options?.search_context_size;
+      payload.web_search_options = {
+        search_context_size: ["low", "medium", "high"].includes(size) ? size : "low",
+      };
+    } else {
+      payload.temperature = 0.7;
+    }
+
+    try {
+      const openaiResponse = await fetch("https://api.openai.com/v1/chat/completions", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          // Read the existing secret in Cloudflare; never copy its value here.
+          Authorization: `Bearer ${env.OPENAI_API_KEY}`,
+        },
+        body: JSON.stringify(payload),
+      });
+      if (!openaiResponse.ok) {
+        return json({ error: "The AI service could not complete this request. Try again or contact the service maintainer." }, openaiResponse.status);
+      }
+      const data = await openaiResponse.json();
+      const message = data.choices?.[0]?.message;
+      if (typeof message?.content !== "string" || !message.content.trim()) {
+        return json({ error: "The AI service returned no reply." }, 502);
+      }
+
+      // Keep the complete standard response, including model and citation
+      // annotations. The reply alias keeps older classroom frontends working.
+      return json({ ...data, reply: message.content });
+    } catch {
+      return json({ error: "The AI service is temporarily unreachable. Please try again." }, 502);
+    }
+  },
+};

@@ -61,6 +61,8 @@ The Worker maintainer needs to:
 | `style.css` | Brand styling, responsive layout, keyboard focus, RTL support |
 | `script.js` | Filtering, selection, storage, history, Worker requests |
 | `sources.js` | Safe assistant formatting and returned citations |
+| `cloudflare-worker.txt` | Complete server replacement for the existing Worker; no secret values |
+| `WORKER_DEPLOYMENT.md` | Exact deployment instructions for the remaining search fix |
 | `products.json` | Supplied product data and image URLs |
 | `RUBRIC_REVIEW.md` | Criterion-by-criterion evidence and the remaining search limitation |
 | `REFLECTIONS.md` | Reviewable reflection answers |

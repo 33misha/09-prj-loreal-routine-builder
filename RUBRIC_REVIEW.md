@@ -36,6 +36,10 @@ The production website was checked directly in a clean browser with no saved con
 
 ## Remaining web-search work
 
+A complete replacement for the pasted Worker source is ready in [cloudflare-worker.txt](cloudflare-worker.txt). [WORKER_DEPLOYMENT.md](WORKER_DEPLOYMENT.md) includes a copyable instruction for the Cloudflare-connected agent and dashboard steps. It keeps the existing secret binding and must be deployed to the existing Worker before live search can be verified. The frontend also accepts the `citations` field used by the proposed revision, as well as standard annotations.
+
+The replacement passed 11 offline server contract checks, including model-specific request options, complete conversation forwarding, preserved citations, CORS, and error recovery. The 24 frontend regression checks also passed with the proposed `reply`/`citations` wrapper. These simulated checks do not replace live search verification.
+
 The frontend does not send `temperature`. The live error indicates that the class service adds it; a probe with `temperature: null` still failed. The class Worker must omit that field for the searching model, forward the model/search options, and preserve citation annotations in its response. It can return the standard Chat Completions shape or `{ reply, annotations }`, both accepted by the frontend.
 
 After a server-side change, send a current product question with search enabled, confirm the returned answer contains real citation metadata, open the visible sources, and verify that the information is current and relevant. Mock citation-rendering checks demonstrate frontend behavior only; they cannot earn the live-search criterion by themselves.
